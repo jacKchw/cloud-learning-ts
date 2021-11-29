@@ -1,0 +1,38 @@
+version: "3"
+services:
+  web:
+    build: .
+    image: jackchan56220/clould-learning-ts
+    ports:
+      - "3000:3000"
+    links:
+      - db
+    depends_on:
+      - db
+    restart: always
+    environment:
+      MYSQL_HOST: "db"
+      MYSQL_USER: "admin"
+      MYSQL_PASSWORD: "password"
+      MYSQL_DATABASE: "test"
+      ROOT_USERID: "admin"
+      ROOT_USERNAME: "admin"
+      ROOT_PASSWORD: "abc"
+      SECRET: "abc"
+  db:
+    image: linuxserver/mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_USER: "admin"
+      MYSQL_PASSWORD: "password"
+      MYSQL_DATABASE: "test"
+    healthcheck:
+      test: '/usr/bin/mysql --user=root --password=password --protocol tcp --execute "USE test;"'
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    volumes:
+      - mariadb-data:/var/lib/mysql
+volumes:
+  mariadb-data:
