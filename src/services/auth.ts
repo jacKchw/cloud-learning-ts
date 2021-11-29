@@ -2,7 +2,7 @@ import passport from "passport"
 import { Strategy, ExtractJwt } from "passport-jwt"
 
 var opts = {
-  jwtFromRequest: ExtractJwt.fromHeader("authorization"),
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.SECRET || "abc",
 }
 
