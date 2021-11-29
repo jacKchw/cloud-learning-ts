@@ -1,7 +1,6 @@
 import pkg from "mariadb"
 const mariadb = pkg
-import bcrypt from "bcrypt"
-import { passwordSaltRounds } from "../config.json"
+import { createUser } from "./users"
 
 const pool = mariadb.createPool({
   host: process.env.MYSQL_HOST,
@@ -40,15 +39,10 @@ export const initDB = async () => {
   )
 
   //create admin
-  //todo: use services to create user
   await userPromise
   const users = await queryDB("SELECT userid FROM users")
   if (users.length == 0) {
-    const crypted = await bcrypt.hash(admin.password, passwordSaltRounds)
-    await queryDB(
-      "INSERT INTO users (userid, username, password) VALUES (?,?,?)",
-      [admin.userid, admin.username, crypted]
-    )
+    await createUser(admin.userid, admin.username, admin.password)
   }
 
   await downloadPromise
