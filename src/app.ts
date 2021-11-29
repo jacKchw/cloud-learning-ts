@@ -3,8 +3,12 @@ import logger from "morgan"
 import passport from "passport"
 import createError from "http-errors"
 
-import passportJWT from "./services/auth"
-import routes from "./api/routes"
+import { usePassport } from "./services/auth"
+import testRoutes from "./routes/test"
+import userRoutes from "./routes/users"
+import { initDB } from "./services/db"
+
+initDB()
 
 var app = express()
 
@@ -13,9 +17,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use(passport.initialize())
-passportJWT()
+usePassport()
 
-app.use("/", routes)
+app.use("/", testRoutes)
+app.use("/users", userRoutes)
 
 // catch 404 and forward to error handler
 app.use(function (
